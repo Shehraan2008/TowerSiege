@@ -14,9 +14,9 @@ class Stand {
   show() {
     let pos = this.body.position;
     push();
-    translate(pos.x - 80, pos.y);
+    translate(pos.x - 80, pos.y + 10);
     noStroke();
-    fill("blue");
+    fill(160, 105, 247);
     rect(0, 0, this.w, this.h);
     pop();
   }

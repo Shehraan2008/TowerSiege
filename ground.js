@@ -11,7 +11,6 @@ class Ground {
   show() {
     var pos = this.body.position;
     rectMode(CENTER);
-    push();
     fill("green");
     push();
     translate(pos.x, pos.y);

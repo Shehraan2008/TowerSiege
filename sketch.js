@@ -1,20 +1,19 @@
 // Module ALiases
 const { Engine, World, Bodies, Body, Constraint } = Matter;
-// Engien and world
+// Engien, World and the API link
+let url = "http://worldclockapi.com/api/json/est/now";
 let engine, world;
 // images
 let polyImg;
 // Bodies
-let polygon, ground, stand1, stand2, block, slingShot;
+let polygon, ground, stand1, stand2, block, slingShot, n;
 let blocks = (blocks2 = []);
-// GameState;
-PLAY = 1;
-START = 2;
-gameState = START;
+// GameState and Score
+let score = 0;
 
 // Loading images
 function preload() {
-  polyImg = loadImage("polygon.png");
+  getTime();
 }
 function setup() {
   const canvas = createCanvas(900, 400);
@@ -53,7 +52,6 @@ function setup() {
     blocks2.push(block);
   }
   // Level 3
-  fill(255, 105, 97);
   block2 = new Box(690, 155, 30, 40);
 
   // Stands
@@ -71,7 +69,8 @@ function setup() {
 
 function draw() {
   // Background
-  background("beige");
+  background(102, 191, 248);
+
   // Stands
   stand1.show();
   stand2.show();
@@ -79,14 +78,18 @@ function draw() {
   // Blocks
   for (let index = 0; index < blocks.length; index++) {
     blocks[index].show();
+    blocks[index].score();
   }
   // Blocks2
   for (let index = 0; index < blocks.length; index++) {
     blocks2[index].show();
+    blocks2[index].score();
   }
   // Blocks 3
   block.show();
+  block.score();
   block2.show();
+  block2.score();
 
   //Polygon
   polygon.show();
@@ -94,24 +97,23 @@ function draw() {
   //Slingshot
   slingShot.show();
 
-  // Instructions
-  if (gameState === START) {
-    textSize(18);
-    textFont("Comic Sans ms");
-    text("Drag your Mouse to Launch the Polygon", 50, 50);
-    text("Press SPACE to reset the Polygon", 50, 80);
-  }
-
   // Some Annotations
-  textSize(55);
-  textFont("Comic Sans ms");
-  text("Tower Seige", 350, 100);
+  fill(255);
+  textFont("VT323");
+  textSize(24);
+  text(
+    "Drag the Hexagonal Stone and Relese it , to launch it towards the blocks",
+    10,
+    30
+  );
+  text("Press space bar to reset", 10, 70);
+  fill("yellow");
+  text(score, 10, 110);
 }
 
 // launch Mechanism
 function mouseDragged() {
   Matter.Body.setPosition(polygon.body, { x: mouseX, y: mouseY });
-  gameState = PLAY;
 }
 
 function mouseReleased() {
@@ -126,15 +128,15 @@ function keyPressed() {
   }
 }
 
-function isTouching(spriteOne, spriteTwo) {
-  if (
-    spriteOne.x - spriteTwo.x < spriteTwo.width / 2 + spriteOne.width / 2 &&
-    spriteTwo.x - spriteOne.x < spriteTwo.width / 2 + spriteOne.width / 2 &&
-    spriteOne.y - spriteTwo.y < spriteTwo.height / 2 + spriteOne.height / 2 &&
-    spriteTwo.y - spriteOne.y < spriteTwo.height / 2 + spriteOne.height / 2
-  ) {
-    return true;
+// API
+async function getTime() {
+  var response = await fetch(url);
+  var responseJSON = await response.json();
+  var dateTime = responseJSON.currentDateTime;
+  var hour = dateTime.slice(11, 13);
+  if (hour >= 6 && hour < 18) {
+    background(102, 191, 248);
   } else {
-    return false;
+    background(160, 105, 247);
   }
 }
